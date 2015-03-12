@@ -1,0 +1,70 @@
+
+##### Weekly Top 10
+# To get list of weeks
+SELECT YEARWEEK(purchase_date) as weeks
+from line_item as l 
+inner join books as b on l.isbn = b.isbn 
+inner join transactions as t on l.transaction_id = t.transaction_id 
+group by CONCAT(YEAR(purchase_date), '/', WEEK(purchase_date))
+order by weeks DESC;
+
+# To get top 10 in each week
+SELECT CONCAT(YEAR(purchase_date), '/', WEEK(purchase_date)) as weeks, YEARWEEK(purchase_date), count(l.isbn) as num, b.title
+from line_item as l 
+inner join books as b on l.isbn = b.isbn 
+inner join transactions as t on l.transaction_id = t.transaction_id 
+where YEARWEEK(purchase_date) = '201509'
+group by CONCAT(YEAR(purchase_date), '/', WEEK(purchase_date)), l.isbn
+order by weeks DESC, num 
+LIMIT 10;
+
+
+###### Weekly top 5 for a particular genre
+# To get list of weeks
+SELECT YEARWEEK(purchase_date) as weeks
+from line_item as l 
+inner join books as b on l.isbn = b.isbn 
+inner join transactions as t on l.transaction_id = t.transaction_id
+group by CONCAT(YEAR(purchase_date), '/', WEEK(purchase_date))
+order by weeks DESC;
+
+# To get all genres
+SELECT genre_name from genres;
+
+# To get top 5 in each week per genre
+SELECT count(l.isbn) as num, b.title
+from line_item as l 
+inner join books as b on l.isbn = b.isbn 
+inner join transactions as t on l.transaction_id = t.transaction_id 
+inner join genre_book as gb on b.isbn=gb.isbn
+where YEARWEEK(purchase_date) = '201509' and gb.genre_name='Satire'
+group by CONCAT(YEAR(purchase_date), '/', WEEK(purchase_date)), l.isbn
+order by num 
+LIMIT 5;;
+
+###### Top rated books
+# Weeks in which there was a review
+SELECT YEARWEEK(review_date) as weeks
+from rating as r
+group by CONCAT(YEAR(review_date), '/', WEEK(review_date))
+order by weeks DESC;
+
+# Ratings for books in given week
+SELECT isbn, count(isbn), sum(rating), avg(rating)
+from rating
+where yearweek(review_date) = '201509'
+group by isbn 
+order by isbn desc;
+
+###### Direct marketing
+SELECT t.username, genre_name, count(g.genre_name) as purchase_count
+	from line_item as l 
+    inner join books as b on l.isbn = b.isbn 
+	inner join transactions as t on l.transaction_id = t.transaction_id 
+	inner join genre_book as g on g.isbn = b.isbn
+    group by t.username, g.genre_name
+    having count(g.genre_name) > 1 and concat(year(purchase_date), month(purchase_date)) = '20153'
+    order by purchase_count desc;
+
+
+
