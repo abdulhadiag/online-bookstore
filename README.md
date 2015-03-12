@@ -1,7 +1,11 @@
 # css490-project
-Implement a Bookstore using Servlets/JSP/Tomcat.
+Implemented an online bookstore using Servlets/JSP/Tomcat, as part of a group project.
 
-- JavaBeans for all tables
+Teammates:
+- Tim Galvin
+- Aaron Steffen
+
+JavaBeans for all tables
 - Action classes (Servlets, DB representation, DB Interface)
 - Complete JSPages:
   * BookListing
